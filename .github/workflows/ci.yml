@@ -1,0 +1,21 @@
+on:
+  pull_request:
+  push:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-java@v3
+      with:
+        java-version: "21"
+        distribution: zulu
+    - run: sbt -J--enable-preview compile
+    - run: ls target/scala-3.3.1/classes
+    - run: javap target/scala-3.3.1/classes/A.class
+    - run: |
+        pushd target/scala-3.3.1/classes
+        java --enable-preview A
+        popd
+    - run: sbt -J--enable-preview run
